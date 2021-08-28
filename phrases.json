@@ -1,0 +1,38 @@
+{
+  "start": {
+    "eng": "Send a document to convert"
+  },
+  "available_formats": {
+    "eng": "Available formats:"
+  },
+  "available_formats_images": {
+    "eng": "Image formats:"
+  },
+  "available_formats_documents": {
+    "eng": "Document formats:"
+  },
+  "available_formats_video": {
+    "eng": "Video formats:"
+  },
+  "compressed_file": {
+    "eng": "Please send uncompressed file (as a document)"
+  },
+  "image_detected": {
+    "eng": "Image detected, chose the format to convert to:"
+  },
+  "document_detected": {
+    "eng": "Document detected, chose the format to convert to:"
+  },
+  "video_detected": {
+    "eng": "Video detected, chose the format to convert to:"
+  },
+  "no_file": {
+    "eng": "No file supplied"
+  },
+  "wrong_format": {
+    "eng": "Wrong format"
+  },
+  "not_supported_format": {
+    "eng": "Supplied format not supported"
+  }
+}
