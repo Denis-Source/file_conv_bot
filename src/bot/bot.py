@@ -271,8 +271,6 @@ class Bot(Config):
 
             if "/" in context["text"]:
                 self.process_command(context)
-            else:
-                self.send_message(context, "wrong_format")
 
         except UnsupportedFormatException:
             self.send_message(context, "wrong_format")
