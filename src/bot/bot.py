@@ -282,12 +282,15 @@ class Bot(Config):
         :param context: dict
         :return: None
         """
-        if "document" in context:
-            self.process_media(context)
+        try:
+            if "document" in context:
+                self.process_media(context)
 
-        elif "text" in context:
-            self.process_text(context)
+            elif "text" in context:
+                self.process_text(context)
 
-        if "photo" in context or "video" in context:
-            self.send_message(context, "compressed_file")
-            self.logger.debug("Compressed file supplied")
+            if "photo" in context or "video" in context:
+                self.send_message(context, "compressed_file")
+                self.logger.debug("Compressed file supplied")
+        except Exception as e:
+            self.logger.error(e)
