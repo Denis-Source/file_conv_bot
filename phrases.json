@@ -34,5 +34,8 @@
   },
   "not_supported_format": {
     "eng": "Supplied format not supported"
+  },
+  "error": {
+    "eng": "Oops something went wrong"
   }
 }

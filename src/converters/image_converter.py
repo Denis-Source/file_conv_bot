@@ -9,7 +9,7 @@ class ImageConverter(Converter):
     """
     Image Converter class used for converting images in defined formats (AVAILABLE_FORMATS)
     """
-    AVAILABLE_FORMATS = ["ico", "bmp", "jpeg", "png", "pdf", "jpg"]
+    AVAILABLE_FORMATS = ["ico", "bmp", "jpeg", "png", "jpg", "webp"]
 
     def __init__(self):
         super().__init__()

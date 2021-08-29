@@ -68,13 +68,15 @@ class Bot(Config):
         :return: None
         """
         if is_phrase:
-            message = self.get_answer(message)
+            response = self.get_answer(message)
+            log_response = message
+        else:
+            response = message
+            log_response = "other"
         data = {"chat_id": context["from"]["id"],
-                "text": message}
+                "text": response}
         requests.post(url=self.get_url("sendMessage"), data=data)
-        if not is_phrase:
-            message = "other"
-        self.logger.info(f"Message {message} sent to {context['from']['id']}")
+        self.logger.info(f"Message {log_response} sent to {context['from']['id']}")
 
     def send_document(self, context, file_path):
         """
@@ -126,34 +128,43 @@ class Bot(Config):
         self.logger.debug(f"File saved at {temp_filepath}")
         return temp_filepath
 
-    def process_image(self, context):
+    def process_image(self, context, image_format):
         """
         Sends message about image formats
+        :param image_format: str
         :param context: dict
         :return: None
         """
+        available_formats = self.image_converter.AVAILABLE_FORMATS.copy()
+        available_formats.remove(image_format)
         self.logger.debug("Document with supported image format detected")
         self.send_message(context, "image_detected")
         self.send_message(context,
                           ", ".join(self.image_converter.AVAILABLE_FORMATS), is_phrase=False)
 
-    def process_document(self, context):
+    def process_document(self, context, document_format):
         """
         Sends message about document formats
+        :param document_format: str
         :param context: dict
         :return: None
         """
+        available_formats = self.document_converter.AVAILABLE_OUTPUT_FORMATS.copy()
+        available_formats.remove(document_format)
         self.logger.debug("Document with supported document format detected")
         self.send_message(context, "document_detected")
         self.send_message(context,
-                          ", ".join(self.document_converter.AVAILABLE_OUTPUT_FORMATS), is_phrase=False)
+                          ", ".join(available_formats), is_phrase=False)
 
-    def process_video(self, context):
+    def process_video(self, context, video_format):
         """
         Sends message about video formats
+        :param video_format: str
         :param context: dict
         :return: None
         """
+        available_formats = self.video_converter.AVAILABLE_FORMATS.copy()
+        available_formats.remove(video_format)
         self.logger.debug("Document with supported video format detected")
         self.send_message(context, "video_detected")
         self.send_message(context,
@@ -175,13 +186,13 @@ class Bot(Config):
             file_format = document_path.split(".")[-1]
 
             if file_format in self.image_converter.AVAILABLE_FORMATS:
-                self.process_image(context)
+                self.process_image(context, file_format)
 
             elif file_format in self.document_converter.AVAILABLE_INPUT_FORMATS:
-                self.process_document(context)
+                self.process_document(context, file_format)
 
             elif file_format in self.video_converter.AVAILABLE_FORMATS:
-                self.process_video(context)
+                self.process_video(context, file_format)
 
             else:
                 self.logger.debug(f"Document format {file_format} not supported")
@@ -271,7 +282,8 @@ class Bot(Config):
 
             if "/" in context["text"]:
                 self.process_command(context)
-
+            else:
+                self.send_message(context, "not_supported_format")
         except UnsupportedFormatException:
             self.send_message(context, "wrong_format")
             self.logger.error("Wrong format")
@@ -293,4 +305,5 @@ class Bot(Config):
                 self.send_message(context, "compressed_file")
                 self.logger.debug("Compressed file supplied")
         except Exception as e:
+            self.send_message(context, "error")
             self.logger.error(e)

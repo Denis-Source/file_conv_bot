@@ -12,7 +12,7 @@ class VideoConverter(Converter):
 
     """
 
-    AVAILABLE_FORMATS = ["mp4", "avi", "frame"]
+    AVAILABLE_FORMATS = ["frame"]
 
     def __init__(self):
         super().__init__()

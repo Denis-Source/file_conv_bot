@@ -12,15 +12,18 @@ class DocumentConverter(Converter):
     Depends on latex engine (Requires TeXlive)
     """
     AVAILABLE_INPUT_FORMATS = [
-        "fb2", "ipynb", "csv", "csljson", "bibtex", "biblatex", "json", "markdown", "creole", "gfm", "rst", "vimwiki",
-        "docbook", "opml", "org", "texile", "html", "jats", "jira", "latex", "haddock", "twiki", "docx", "odt", "t2t",
-        "epub", "muse", "man",
+        'bibtex', 'biblatex', 'commonmark', 'commonmark_x', 'creole', 'csljson', 'csv', 'docbook', 'docx', 'dokuwiki',
+        'epub', 'fb2', 'gfm', 'haddock', 'html', 'ipynb', 'jats', 'jira', 'json', 'latex', 'markdown', 'markdown_mmd',
+        'markdown_phpextra', 'markdown_strict', 'mediawiki', 'man', 'muse', 'native', 'odt', 'opml', 'org', 'rtf',
+        'rst', 't2t', 'textile', 'tikiwiki', 'twiki', 'vimwiki'
     ]
     AVAILABLE_OUTPUT_FORMATS = [
-        "gfm", "tei", "muse", "bibtex", "biblatex", "json", "docx", "odt", "pptx", "epub", "epub2", "epub3", "fb2",
-        "ipynb", "html", "html", "icml", "s5", "slidy", "docbook", "opml", "latex", "beamer", "contexy", "textinfo",
-        "man", "ms", "markdown", "txt", "rst", "rtf", "asciidoc", "pdf"
-    ]
+        'asciidoc', 'beamer', 'bibtex', 'biblatex', 'commonmark', 'commonmark_x', 'context', 'csljson', 'docbook',
+        'docbook5', 'docx', 'dokuwiki', 'epub', 'epub2', 'fb2', 'gfm', 'haddock', 'html', 'html4', 'icml', 'ipynb',
+        'jats_archiving', 'jats_articleauthoring', 'jats_publishing', 'jats', 'jira', 'json', 'latex', 'man',
+        'markdown', 'markdown_mmd', 'markdown_phpextra', 'markdown_strict', 'mediawiki', 'ms', 'muse', 'native', 'odt',
+        'opml', 'opendocument', 'org', 'pdf', 'plain', 'pptx', 'rst', 'rtf', 'texinfo', 'textile', 'slideous', 'slidy',
+        'dzslides', 'revealjs', 's5', 'tei', 'xwiki', 'zimwiki']
 
     def __init__(self):
         super().__init__()
