@@ -259,7 +259,7 @@ class Bot(Config):
         self.logger.debug("Text detected")
         try:
             if context["from"]["id"] in self.file_history:
-                file_id = context["from"]["id"]
+                file_id = self.file_history[context["from"]["id"]]
                 if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
                     self.convert_document(context, file_id)
 
