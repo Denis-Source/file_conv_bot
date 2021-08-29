@@ -71,7 +71,7 @@ class Converter(Config):
         temp_folder = self.TEMP_FOLDER
         files = os.listdir(temp_folder)
         for file in files:
-            if file_id in file:
+            if str(file_id) in file:
                 filepath = os.path.join(temp_folder, file)
                 self.logger.debug(f"File with id {file_id} found at {filepath}")
                 return filepath
