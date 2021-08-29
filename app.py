@@ -6,8 +6,7 @@ from config import Config
 
 app = Flask(__name__)
 api = Api(app)
-api.add_resource(BotResource, "/")
-
+api.add_resource(BotResource, f"/{Config.BOT_TOKEN}")
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=Config.SERVER_PORT, debug=True)
+    app.run()
