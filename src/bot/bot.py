@@ -18,7 +18,6 @@ class Bot(Config):
     def __init__(self, lang="eng"):
         self.phrases_file = "phrases.json"
         self.lang = lang
-        self.text_data  = self.read_phrases()
 
         self.image_converter = image_converter.ImageConverter()
         self.video_converter = video_coverter.VideoConverter()
@@ -26,6 +25,8 @@ class Bot(Config):
 
         self.logger = Logger("bot")
         self.file_history = BotFileHistory()
+
+        self.text_data = self.read_phrases()
 
     def read_phrases(self):
         """
