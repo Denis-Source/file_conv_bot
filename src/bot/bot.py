@@ -279,6 +279,9 @@ class Bot(Config):
 
                 elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, file_id)
+            else:
+                self.send_message(context, "no_file")
+                return
 
             if "/" in context["text"]:
                 self.process_command(context)
