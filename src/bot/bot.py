@@ -140,7 +140,7 @@ class Bot(Config):
         self.logger.debug("Document with supported image format detected")
         self.send_message(context, "image_detected")
         self.send_message(context,
-                          ", ".join(self.image_converter.AVAILABLE_FORMATS), is_phrase=False)
+                          ", ".join(available_formats), is_phrase=False)
 
     def process_document(self, context, document_format):
         """
@@ -168,7 +168,7 @@ class Bot(Config):
         self.logger.debug("Document with supported video format detected")
         self.send_message(context, "video_detected")
         self.send_message(context,
-                          ", ".join(self.video_converter.AVAILABLE_FORMATS), is_phrase=False)
+                          ", ".join(available_formats), is_phrase=False)
 
     def process_media(self, context):
         """
@@ -273,12 +273,15 @@ class Bot(Config):
                 file_id = self.file_history[context["from"]["id"]]
                 if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
                     self.convert_document(context, file_id)
+                    return
 
-                elif context["text"] in self.image_converter.AVAILABLE_FORMATS:
+                if context["text"] in self.image_converter.AVAILABLE_FORMATS:
                     self.convert_image(context, file_id)
+                    return
 
-                elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
+                if context["text"] in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, file_id)
+                    return
             else:
                 self.send_message(context, "no_file")
                 return
