@@ -49,7 +49,12 @@ class DocumentConverter(Converter):
             raise UnsupportedFormatException(error_message)
 
         new_file_path = document_path.replace(old_format, new_format)
-        pypandoc.convert_file(document_path, new_format, outputfile=new_file_path)
 
-        self.logger.info(f"Converted document {document_path} to {new_file_path}")
-        return new_file_path
+        try:
+
+            pypandoc.convert_file(document_path, new_format, outputfile=new_file_path)
+
+            self.logger.info(f"Converted document {document_path} to {new_file_path}")
+            return new_file_path
+        except RuntimeError as e:
+            raise UnsupportedFormatException(e)
