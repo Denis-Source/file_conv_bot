@@ -270,27 +270,21 @@ class Bot(Config):
         """
         self.logger.debug("Text detected")
         try:
-            if context["from"]["id"] in self.file_history:
+            if "/" in context["text"]:
+                self.process_command(context)
+            elif context["from"]["id"] in self.file_history:
                 file_id = self.file_history[context["from"]["id"]]
                 if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
                     self.convert_document(context, file_id)
-                    return
 
-                if context["text"] in self.image_converter.AVAILABLE_FORMATS:
+                elif context["text"] in self.image_converter.AVAILABLE_FORMATS:
                     self.convert_image(context, file_id)
-                    return
 
-                if context["text"] in self.video_converter.AVAILABLE_FORMATS:
+                elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, file_id)
-                    return
             else:
                 self.send_message(context, "no_file")
-                return
 
-            if "/" in context["text"]:
-                self.process_command(context)
-            else:
-                self.send_message(context, "not_supported_format")
         except UnsupportedFormatException:
             self.send_message(context, "wrong_format")
             self.logger.error("Wrong format")
