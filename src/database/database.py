@@ -129,7 +129,7 @@ class DataBase(Config):
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
         if user:
-            if user.get_priveleges:
+            if user.get_privileges():
                 self.logger.debug(f"User {telegram_id} is admin")
                 return True
         self.logger.debug(f"User {telegram_id} is not admin")

@@ -23,6 +23,13 @@ class User(declarative_base()):
         """
         self.stats += 1
 
+    def get_privileges(self):
+        """
+        Gets admin attribute
+        :return: bool
+        """
+        return self.is_admin
+
     def set_privileges(self, is_admin):
         """
         Sets admin attribute
