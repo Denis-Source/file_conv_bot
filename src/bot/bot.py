@@ -7,6 +7,8 @@ from config import Config
 from src.converters import image_converter, video_coverter, document_converter
 from src.converters.converter import UnsupportedFormatException
 from src.bot.bot_file_history import BotFileHistory
+from src.database import database
+from functools import wraps
 
 
 class Bot(Config):
@@ -22,11 +24,12 @@ class Bot(Config):
         self.image_converter = image_converter.ImageConverter()
         self.video_converter = video_coverter.VideoConverter()
         self.document_converter = document_converter.DocumentConverter()
+        self.database = database.DataBase()
 
         self.logger = Logger("bot")
         self.file_history = BotFileHistory()
-
         self.text_data = self.read_phrases()
+        self.database.set_admin(self.ADMIN_TELEGRAM_ID)
 
     def read_phrases(self):
         """
@@ -199,6 +202,22 @@ class Bot(Config):
                 self.logger.debug(f"Document format {file_format} not supported")
                 self.send_message(context, "not_supported_format")
 
+    def add_user(self, context):
+        user_id = context["from"]["id"]
+        if self.database.get_admin(user_id):
+            text = context["text"]
+            if len(text.split(" ")) == 2:
+                _, new_user = text.split(" ")
+                try:
+                    new_user = int(new_user)
+                    self.database.register_user(new_user)
+                    self.send_message(context, "user_registered")
+                    self.logger.warning(f"New user {new_user} registered")
+                except ValueError:
+                    self.send_message(context, "not_valid_user")
+        else:
+            self.send_message(context, "user_not_admin")
+
     def process_command(self, context):
         """
         Sends command reply if command received
@@ -261,18 +280,13 @@ class Bot(Config):
                 self.send_document(context, new_file_path)
                 self.logger.debug("Video conversion successful")
                 self.video_converter.delete_file(new_file_path)
+            else:
+                # TODO
+                self.send_message(context, "dev_feature")
 
-    def process_text(self, context):
-        """
-        Processes text
-        :param context: dict
-        :return: None
-        """
-        self.logger.debug("Text detected")
-        try:
-            if "/" in context["text"]:
-                self.process_command(context)
-            elif context["from"]["id"] in self.file_history:
+    def process_file_format(self, context):
+        if self.database.get_authorised(telegram_id=context["from"]["id"]):
+            if context["from"]["id"] in self.file_history:
                 file_id = self.file_history[context["from"]["id"]]
                 if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
                     self.convert_document(context, file_id)
@@ -286,6 +300,21 @@ class Bot(Config):
                     self.send_message(context, "not_supported_format")
             else:
                 self.send_message(context, "no_file")
+        else:
+            self.send_message(context, "unknown_user")
+
+    def process_text(self, context):
+        """
+        Processes text
+        :param context: dict
+        :return: None
+        """
+        self.logger.debug("Text detected")
+        try:
+            if "/" in context["text"]:
+                self.process_command(context)
+            else:
+                self.process_file_format(context)
 
         except UnsupportedFormatException:
             self.send_message(context, "wrong_format")
@@ -298,15 +327,17 @@ class Bot(Config):
         :return: None
         """
         try:
-            if "document" in context:
-                self.process_media(context)
-
-            elif "text" in context:
+            if "text" in context:
                 self.process_text(context)
 
-            if "photo" in context or "video" in context:
-                self.send_message(context, "compressed_file")
-                self.logger.debug("Compressed file supplied")
+            if self.database.get_authorised(telegram_id=context["from"]["id"]):
+                if "document" in context:
+                    self.process_media(context)
+
+                elif "photo" in context or "video" in context:
+                    self.send_message(context, "compressed_file")
+            else:
+                self.send_message(context, "unknown_user")
         except Exception as e:
             self.send_message(context, "error")
             self.logger.error(e)

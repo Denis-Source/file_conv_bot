@@ -37,5 +37,20 @@
   },
   "error": {
     "eng": "Oops something went wrong"
+  },
+  "unknown_user": {
+    "eng": "Unknown user"
+  },
+  "not_valid_user": {
+    "eng": "Not valid user"
+  },
+  "user_registered": {
+    "eng": "User registered"
+  },
+  "user_not_admin": {
+    "eng": "You are not admin to do that!"
+  },
+  "dev_feature": {
+    "eng": "Current feature is in development"
   }
 }
