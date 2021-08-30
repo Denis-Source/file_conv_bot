@@ -6,7 +6,7 @@ from src.logger import Logger
 from config import Config
 from src.converters import image_converter, video_coverter, document_converter
 from src.converters.converter import UnsupportedFormatException
-from src.database import database
+from src.database.database import DataBase, UserIsAlreadyRegistered
 
 
 class Bot(Config):
@@ -22,7 +22,7 @@ class Bot(Config):
         self.image_converter = image_converter.ImageConverter()
         self.video_converter = video_coverter.VideoConverter()
         self.document_converter = document_converter.DocumentConverter()
-        self.database = database.DataBase()
+        self.database = DataBase()
 
         self.logger = Logger("bot")
         self.text_data = self.read_phrases()
@@ -215,6 +215,8 @@ class Bot(Config):
                     self.logger.warning(f"New user {new_user} registered")
                 except ValueError:
                     self.send_message(context, "not_valid_user")
+                except UserIsAlreadyRegistered:
+                    self.send_message(context, "user_already_registered")
             else:
                 self.send_message(context, "wrong_command_format")
         else:

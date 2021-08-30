@@ -47,6 +47,9 @@
   "user_registered": {
     "eng": "User registered"
   },
+  "user_already_registered": {
+    "eng": "User is already registered!"
+  },
   "user_not_admin": {
     "eng": "You are not admin to do that!"
   },
