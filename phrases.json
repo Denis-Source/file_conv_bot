@@ -55,5 +55,11 @@
   },
   "dev_feature": {
     "eng": "Current feature is in development"
+  },
+  "file_too_big": {
+    "eng": "File is too big!"
+  },
+  "unsupported_message_type": {
+    "eng": "Message type is not supported!"
   }
 }

@@ -6,11 +6,7 @@ from src.logger import Logger
 from config import Config
 from src.converters import image_converter, video_coverter, document_converter
 from src.converters.converter import UnsupportedFormatException
-from src.bot.bot_file_history import BotFileHistory
 from src.database import database
-from functools import wraps
-
-
 class Bot(Config):
     """
     Bot class used for document, image, video conversion
@@ -27,7 +23,6 @@ class Bot(Config):
         self.database = database.DataBase()
 
         self.logger = Logger("bot")
-        self.file_history = BotFileHistory()
         self.text_data = self.read_phrases()
         self.database.set_admin(self.ADMIN_TELEGRAM_ID)
 
@@ -184,7 +179,10 @@ class Bot(Config):
             self.logger.debug("Document detected")
 
             file_id = context["document"]["file_id"]
-            self.file_history[context["from"]["id"]] = file_id
+            self.database.set_filepath(
+                context["from"]["id"],
+                file_id
+            )
 
             document_path = self.download_document(file_id)
             file_format = document_path.split(".")[-1]
@@ -289,17 +287,22 @@ class Bot(Config):
                 self.send_message(context, "dev_feature")
 
     def process_file_format(self, context):
+        """
+        If supported format supplied and user is authorized converts document
+        :param context: dict
+        :return: None
+        """
         if self.database.get_authorised(telegram_id=context["from"]["id"]):
-            if context["from"]["id"] in self.file_history:
-                file_id = self.file_history[context["from"]["id"]]
+            prev_file_path = self.database.get_filepath(context["from"]["id"])
+            if prev_file_path:
                 if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
-                    self.convert_document(context, file_id)
+                    self.convert_document(context, prev_file_path)
 
                 elif context["text"] in self.image_converter.AVAILABLE_FORMATS:
-                    self.convert_image(context, file_id)
+                    self.convert_image(context, prev_file_path)
 
                 elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
-                    self.convert_video(context, file_id)
+                    self.convert_video(context, prev_file_path)
                 else:
                     self.send_message(context, "not_supported_format")
             else:
@@ -333,15 +336,32 @@ class Bot(Config):
         try:
             if "text" in context:
                 self.process_text(context)
-
-            if self.database.get_authorised(telegram_id=context["from"]["id"]):
-                if "document" in context:
-                    self.process_media(context)
-
-                elif "photo" in context or "video" in context:
-                    self.send_message(context, "compressed_file")
             else:
-                self.send_message(context, "unknown_user")
+                if self.database.get_authorised(telegram_id=context["from"]["id"]):
+                    if context["document"]["file_size"] <= 20000000:
+                        if "document" in context:
+                            self.process_media(context)
+
+                        elif "photo" in context or "video" in context:
+                            self.send_message(context, "compressed_file")
+
+                        elif "sticker" in context:
+                            # TODO sticker
+                            self.send_message(context, "dev_feature")
+
+                        elif "animation" in context:
+                            # TODO animation
+                            self.send_message(context, "dev_feature")
+
+                        elif "audio" in context:
+                            self.send_message(context, "dev_feature")
+                            # TODO audio
+                        else:
+                            self.send_message(context, "unsupported_message_type")
+                    else:
+                        self.send_message(context, "file_too_big")
+                else:
+                    self.send_message(context, "unknown_user")
         except Exception as e:
             self.send_message(context, "error")
             self.logger.error(e)

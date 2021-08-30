@@ -135,6 +135,20 @@ class DataBase(Config):
         self.logger.debug(f"User {telegram_id} is not admin")
         return False
 
+    def get_filepath(self, telegram_id):
+        query = self.session.query(User)
+        user = query.filter_by(telegram_id=telegram_id).first()
+        if user:
+            filepath = user.get_last_filepath()
+            self.session.commit()
+            self.logger.debug(f"User {telegram_id} set  last filepath at {filepath}")
+            return filepath
+        else:
+            msg = f"User {telegram_id} is not registered"
+            self.logger.debug(msg)
+            raise NoUserFound(msg)
+
+
     def set_filepath(self, telegram_id, filepath):
         """
         Sets user last_filepath attribute
@@ -146,11 +160,12 @@ class DataBase(Config):
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
         if user:
-            user.last_filepath = filepath
+            user.set_last_filepath(filepath)
             self.session.commit()
             self.logger.debug(f"User {telegram_id} set  last filepath at {filepath}")
         else:
             msg = f"User {telegram_id} is not registered"
             self.logger.debug(msg)
             raise NoUserFound(msg)
+
 

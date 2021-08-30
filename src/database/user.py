@@ -45,3 +45,18 @@ class User(declarative_base()):
         :return:
         """
         self.last_filepath = new_filepath
+
+    def get_last_filepath(self):
+        """
+        Gets last_filepath attribute
+        :return: str
+        """
+        return self.last_filepath
+
+    def set_last_filepath(self, new_filepath):
+        """
+        Sets last_filepath attribute
+        :type new_filepath: str
+        :return: None
+        """
+        self.last_filepath = new_filepath
