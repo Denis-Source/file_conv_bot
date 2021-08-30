@@ -50,6 +50,9 @@
   "user_not_admin": {
     "eng": "You are not admin to do that!"
   },
+  "wrong_command_format": {
+    "eng": "Wrong command format"
+  },
   "dev_feature": {
     "eng": "Current feature is in development"
   }

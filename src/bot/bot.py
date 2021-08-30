@@ -215,6 +215,8 @@ class Bot(Config):
                     self.logger.warning(f"New user {new_user} registered")
                 except ValueError:
                     self.send_message(context, "not_valid_user")
+            else:
+                self.send_message(context, "wrong_command_format")
         else:
             self.send_message(context, "user_not_admin")
 
@@ -224,9 +226,9 @@ class Bot(Config):
         :param context: dict
         :return: None
         """
-        if context["text"] == "/start":
+        if "/start" in context["text"]:
             self.send_message(context, "start")
-        elif context["text"] == "/formats":
+        elif "/formats" in context["text"]:
             self.send_message(context, "available_formats")
             self.send_message(context, "available_formats_images")
             self.send_message(context, ", ".join(self.image_converter.AVAILABLE_FORMATS), is_phrase=False)
@@ -234,7 +236,7 @@ class Bot(Config):
             self.send_message(context, ", ".join(self.document_converter.AVAILABLE_INPUT_FORMATS), is_phrase=False)
             self.send_message(context, "available_formats_video")
             self.send_message(context, ", ".join(self.video_converter.AVAILABLE_FORMATS), is_phrase=False)
-        elif context["text"] == "/register":
+        elif "/register" in context["text"]:
             self.add_user(context)
 
     def convert_image(self, context, file_id):
