@@ -234,6 +234,8 @@ class Bot(Config):
             self.send_message(context, ", ".join(self.document_converter.AVAILABLE_INPUT_FORMATS), is_phrase=False)
             self.send_message(context, "available_formats_video")
             self.send_message(context, ", ".join(self.video_converter.AVAILABLE_FORMATS), is_phrase=False)
+        elif context["text"] == "/register":
+            self.add_user(context)
 
     def convert_image(self, context, file_id):
         """
