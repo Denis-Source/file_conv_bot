@@ -282,6 +282,8 @@ class Bot(Config):
 
                 elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, file_id)
+                else:
+                    self.send_message(context, "not_supported_format")
             else:
                 self.send_message(context, "no_file")
 
