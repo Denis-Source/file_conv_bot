@@ -75,6 +75,7 @@ class DataBase(Config):
         :param is_admin: boo
         :return: None
         """
+        # TODO logs warning every time it starts
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
         if user:

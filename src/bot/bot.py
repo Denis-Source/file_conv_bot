@@ -304,13 +304,14 @@ class Bot(Config):
         if self.database.get_authorised(telegram_id=context["from"]["id"]):
             prev_file_path = self.database.get_filepath(context["from"]["id"])
             if prev_file_path:
-                if context["text"] in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
+                text = context["text"].lower()
+                if text in self.document_converter.AVAILABLE_OUTPUT_FORMATS:
                     self.convert_document(context, prev_file_path)
 
-                elif context["text"] in self.image_converter.AVAILABLE_FORMATS:
+                elif text in self.image_converter.AVAILABLE_FORMATS:
                     self.convert_image(context, prev_file_path)
 
-                elif context["text"] in self.video_converter.AVAILABLE_FORMATS:
+                elif text in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, prev_file_path)
                 else:
                     self.send_message(context, "not_supported_format")

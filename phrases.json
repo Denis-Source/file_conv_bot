@@ -15,16 +15,16 @@
     "eng": "Video formats:"
   },
   "compressed_file": {
-    "eng": "Please send uncompressed file (as a document)"
+    "eng": "Please send an uncompressed file (as a document)"
   },
   "image_detected": {
-    "eng": "Image detected, chose the format to convert to:"
+    "eng": "Image detected, choose a format to convert to:"
   },
   "document_detected": {
-    "eng": "Document detected, chose the format to convert to:"
+    "eng": "Document detected, choose a format to convert to:"
   },
   "video_detected": {
-    "eng": "Video detected, chose the format to convert to:"
+    "eng": "Video detected, choose a format to convert to:"
   },
   "no_file": {
     "eng": "No file supplied"
@@ -36,7 +36,7 @@
     "eng": "Supplied format not supported"
   },
   "error": {
-    "eng": "Oops something went wrong"
+    "eng": "Oops something went wrong!"
   },
   "unknown_user": {
     "eng": "Unknown user"
@@ -51,7 +51,7 @@
     "eng": "User is already registered!"
   },
   "user_not_admin": {
-    "eng": "You are not admin to do that!"
+    "eng": "You are not an admin to do that!"
   },
   "wrong_command_format": {
     "eng": "Wrong command format"
