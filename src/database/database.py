@@ -50,19 +50,20 @@ class DataBase(Config):
         :return: None
         :raises: UserIsAlreadyRegistered
         """
-        try:
-            self.session.query(User)
+        query = self.session.query(User)
+        user = query.filter_by(telegram_id=telegram_id).first()
+        if user:
             msg = f"User {telegram_id} is already registered"
             self.logger.debug(msg)
             raise UserIsAlreadyRegistered(msg)
-        except NoResultFound:
+        else:
             self.session.add(
                 User(
                     telegram_id=telegram_id,
                     is_admin=False,
                     stats=0,
-                    date_registered=datetime.datetime.utcnow,
-                    lastfile_path=""
+                    date_registered=datetime.datetime.utcnow(),
+                    last_filepath=""
                 )
             )
             self.logger.debug(f"User {telegram_id} registered")
@@ -82,6 +83,7 @@ class DataBase(Config):
             self.session.commit()
         else:
             self.register_user(telegram_id)
+            user = query.filter_by(telegram_id=telegram_id).first()
             user.set_privileges(is_admin)
             self.session.commit()
         self.logger.warning(f"User {telegram_id} set to admin")
