@@ -25,7 +25,7 @@ class DataBase(Config):
     """
     def __init__(self):
         self.folder = os.path.join(self.BASE_DIR, "database")
-        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}?check_same_thread=False"
+        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}"
         self.logger = Logger("database")
 
         if not os.path.exists(self.folder):
