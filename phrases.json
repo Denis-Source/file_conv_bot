@@ -61,5 +61,8 @@
   },
   "unsupported_message_type": {
     "eng": "Message type is not supported!"
+  },
+  "wrong_command": {
+    "eng": "Wrong command"
   }
 }

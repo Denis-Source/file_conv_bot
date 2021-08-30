@@ -7,6 +7,8 @@ from config import Config
 from src.converters import image_converter, video_coverter, document_converter
 from src.converters.converter import UnsupportedFormatException
 from src.database import database
+
+
 class Bot(Config):
     """
     Bot class used for document, image, video conversion
@@ -234,8 +236,13 @@ class Bot(Config):
             self.send_message(context, ", ".join(self.document_converter.AVAILABLE_INPUT_FORMATS), is_phrase=False)
             self.send_message(context, "available_formats_video")
             self.send_message(context, ", ".join(self.video_converter.AVAILABLE_FORMATS), is_phrase=False)
+
+            # TODO
+
         elif "/register" in context["text"]:
             self.add_user(context)
+        else:
+            self.send_message(context, "wrong_command")
 
     def convert_image(self, context, file_id):
         """
@@ -338,28 +345,28 @@ class Bot(Config):
                 self.process_text(context)
             else:
                 if self.database.get_authorised(telegram_id=context["from"]["id"]):
-                    if context["document"]["file_size"] <= 20000000:
-                        if "document" in context:
+                    if "document" in context:
+                        if context["document"]["file_size"] <= 20000000:
                             self.process_media(context)
-
-                        elif "photo" in context or "video" in context:
-                            self.send_message(context, "compressed_file")
-
-                        elif "sticker" in context:
-                            # TODO sticker
-                            self.send_message(context, "dev_feature")
-
-                        elif "animation" in context:
-                            # TODO animation
-                            self.send_message(context, "dev_feature")
-
-                        elif "audio" in context:
-                            self.send_message(context, "dev_feature")
-                            # TODO audio
                         else:
-                            self.send_message(context, "unsupported_message_type")
+                            self.send_message(context, "file_too_big")
+
+                    elif "photo" in context or "video" in context:
+                        self.send_message(context, "compressed_file")
+
+                    elif "sticker" in context:
+                        # TODO sticker
+                        self.send_message(context, "dev_feature")
+
+                    elif "animation" in context:
+                        # TODO animation
+                        self.send_message(context, "dev_feature")
+
+                    elif "audio" in context:
+                        self.send_message(context, "dev_feature")
+                        # TODO audio
                     else:
-                        self.send_message(context, "file_too_big")
+                        self.send_message(context, "unsupported_message_type")
                 else:
                     self.send_message(context, "unknown_user")
         except Exception as e:

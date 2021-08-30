@@ -1,6 +1,5 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import create_engine
-from sqlalchemy.exc import NoResultFound
 
 from src.database.user import User
 from src.logger import Logger
@@ -26,7 +25,7 @@ class DataBase(Config):
     """
     def __init__(self):
         self.folder = os.path.join(self.BASE_DIR, "database")
-        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}"
+        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}?check_same_thread=False"
         self.logger = Logger("database")
 
         if not os.path.exists(self.folder):
@@ -86,6 +85,7 @@ class DataBase(Config):
             user = query.filter_by(telegram_id=telegram_id).first()
             user.set_privileges(is_admin)
             self.session.commit()
+
         self.logger.warning(f"User {telegram_id} set to admin")
 
     def inc_stat(self, telegram_id):
@@ -147,7 +147,6 @@ class DataBase(Config):
             msg = f"User {telegram_id} is not registered"
             self.logger.debug(msg)
             raise NoUserFound(msg)
-
 
     def set_filepath(self, telegram_id, filepath):
         """
