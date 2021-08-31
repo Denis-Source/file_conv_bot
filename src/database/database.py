@@ -20,8 +20,8 @@ class NoUserFound(Exception):
 
 class DataBase(Config):
     """
-    Database class to interact with bot database
-    Uses sqlite and stores it as db file at database folder
+    Database class used to interact with a bot database
+    Uses sqlite and stores it as a db file at the database folder
     """
     def __init__(self):
         self.folder = os.path.join(self.BASE_DIR, "database")
@@ -43,8 +43,8 @@ class DataBase(Config):
 
     def register_user(self, telegram_id):
         """
-        Registers user with telegram_id
-        If user is already in database raises exception
+        Registers an user with an telegram_id
+        If an user is already in a database raises exception
         :param telegram_id: int
         :return: None
         :raises: UserIsAlreadyRegistered
@@ -69,8 +69,8 @@ class DataBase(Config):
 
     def set_admin(self, telegram_id, is_admin=True):
         """
-        Sets admin attribute of user found by telegram_id
-        If user is not in database registers him than gives admin
+        Sets the admin attribute of an user found by a telegram_id
+        If an user is not in a database registers him than gives an admin
         :param telegram_id: int
         :param is_admin: boo
         :return: None
@@ -91,7 +91,7 @@ class DataBase(Config):
 
     def inc_stat(self, telegram_id):
         """
-        Increments user stat attribute
+        Increments the user stat attribute
         :param telegram_id: int
         :return: None
         :raises: NoUserFound
@@ -109,7 +109,7 @@ class DataBase(Config):
 
     def get_authorised(self, telegram_id):
         """
-        Checks if user is in database if so returns True
+        Checks if an user is in a database if so returns True
         :param telegram_id: int
         :return: bool
         """
@@ -123,7 +123,7 @@ class DataBase(Config):
 
     def get_admin(self, telegram_id):
         """
-        Checks if user has admin rights if so returns True
+        Checks if an user has an admin rights if so returns True
         :param telegram_id: int
         :return: True
         """
@@ -137,6 +137,11 @@ class DataBase(Config):
         return False
 
     def get_filepath(self, telegram_id):
+        """
+        Gets the last_filepath attribute
+        :param telegram_id:
+        :return:
+        """
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
         if user:
@@ -151,7 +156,7 @@ class DataBase(Config):
 
     def set_filepath(self, telegram_id, filepath):
         """
-        Sets user last_filepath attribute
+        Sets last_filepath attribute
         :param telegram_id: int
         :param filepath: str
         :return: None

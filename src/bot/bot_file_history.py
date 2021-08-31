@@ -5,10 +5,10 @@ from src.converters.converter import Converter
 class BotFileHistory(dict, Converter):
     """
     Bot history class
-    Tracks filenames downloaded from chats in temporary folder
+    Tracks filenames downloaded from chats in a temporary folder
     Stores one file per chat
-    Required to store file downloaded in the previous message
-    Based on builtin dict and Converter classes
+    Required to store a file downloaded in the previous message
+    Based on a builtin dict and a Converter classes
     """
     def __init__(self):
         super().__init__()

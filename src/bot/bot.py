@@ -11,7 +11,7 @@ from src.database.database import DataBase, UserIsAlreadyRegistered
 
 class Bot(Config):
     """
-    Bot class used for document, image, video conversion
+    Bot class used for documents, images and videos conversion
     """
     TELEGRAM_API = "https://api.telegram.org"
 

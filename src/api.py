@@ -14,7 +14,7 @@ class BotResource(Resource):
 
     def post(self):
         """
-        Handles post request from telegram bot api
+        Handles a post request from telegram bot api
         :return: dict
         """
         parser = RequestParser()

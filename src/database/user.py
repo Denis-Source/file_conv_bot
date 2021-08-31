@@ -5,7 +5,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 class User(declarative_base()):
     """
     ORM User class to store registered users
-    Database consists of following fields:
     """
     __tablename__ = "users"
 
@@ -18,7 +17,7 @@ class User(declarative_base()):
 
     def inc_stats(self):
         """
-        Increments user stat attribute
+        Increments the user stat attribute
         :return:
         """
         self.stats += 1
@@ -32,7 +31,7 @@ class User(declarative_base()):
 
     def set_privileges(self, is_admin):
         """
-        Sets admin attribute
+        Sets the admin attribute
         :param is_admin:
         :return:
         """
@@ -40,7 +39,7 @@ class User(declarative_base()):
 
     def set_filepath(self, new_filepath):
         """
-        Sets last filepath attribute to track file history
+        Sets the last filepath attribute to track file history
         :param new_filepath:
         :return:
         """
@@ -48,14 +47,14 @@ class User(declarative_base()):
 
     def get_last_filepath(self):
         """
-        Gets last_filepath attribute
+        Gets the last_filepath attribute
         :return: str
         """
         return self.last_filepath
 
     def set_last_filepath(self, new_filepath):
         """
-        Sets last_filepath attribute
+        Sets the last_filepath attribute
         :type new_filepath: str
         :return: None
         """

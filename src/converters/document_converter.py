@@ -6,10 +6,10 @@ from src.logger import Logger
 
 class DocumentConverter(Converter):
     """
-    Document Converter class used for converting documents in defined formats
-    Conversion can be done from specified input (AVAILABLE_INPUT_FORMATS)
+    A Document Converter class used for converting documents in defined formats
+    Conversion can be done from a specified input (AVAILABLE_INPUT_FORMATS)
     to output (AVAILABLE_OUTPUT_FORMATS) file formats
-    Depends on latex engine (Requires TeXlive)
+    Depends on a latex engine (Requires TeXlive)
     """
     AVAILABLE_INPUT_FORMATS = [
         'bibtex', 'biblatex', 'commonmark', 'commonmark_x', 'creole', 'csljson', 'csv', 'docbook', 'docx', 'dokuwiki',
@@ -32,7 +32,7 @@ class DocumentConverter(Converter):
     def convert(self, document_path, new_format):
         """
         Converts document to a specified format
-        In process creates temporary file (unavoidable using pypandoc)
+        In process creates a temporary file (unavoidable using pypandoc)
         Returns filepath of temporary file
         :param document_path: str
         :param new_format: str

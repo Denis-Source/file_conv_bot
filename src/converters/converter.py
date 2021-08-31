@@ -31,7 +31,7 @@ class Converter(Config):
     def generate_temp_path(self, file_format=""):
         """
         Creates a temporary filename and returns it's full path
-        if no file_format returns bare filename (no format)
+        if no file_format argument returns a bare filename (no format)
         :param file_format: str
         :return: str
         """
@@ -46,7 +46,7 @@ class Converter(Config):
 
     def generate_temp_folder(self):
         """
-        Creates and returns full folder path
+        Creates and returns a full folder path
         :return: str
         """
         folder_name = str(time.time()).replace(".", "")

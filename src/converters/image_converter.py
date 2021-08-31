@@ -17,7 +17,8 @@ class ImageConverter(Converter):
 
     def convert(self, image_path, new_format):
         """
-        Converts image from image path to a specified format creates temporary file
+        Converts an image from image path to a specified format
+        Creates temporary file in doing so
         Returns byte array
         :param image_path: str
         :param new_format: str

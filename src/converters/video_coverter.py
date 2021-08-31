@@ -20,8 +20,8 @@ class VideoConverter(Converter):
 
     def frame_video(self, video_path):
         """
-        Splits video in frames and returns a filepath of an zip archive
-        In process creates temporary folder with every frame (deletes it when finishes)
+        Splits a video in frames and returns a filepath of an zip archive
+        In process creates a temporary folder with every frame (deletes it when finishes)
         Requires lots of both time and space
 
         :param video_path: str
