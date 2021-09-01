@@ -25,6 +25,8 @@ class Bot(Config):
         self.database = DataBase()
 
         self.logger = Logger("bot")
+        self.logger.info("Bot started")
+
         self.text_data = self.read_phrases()
         self.database.set_admin(self.ADMIN_TELEGRAM_ID)
 
@@ -90,6 +92,7 @@ class Bot(Config):
             data = {"chat_id": context["from"]["id"]}
             file = {"document": document}
             requests.post(url=self.get_url(method="sendDocument"), data=data, files=file)
+            self.database.inc_stat(context["from"]["id"])
             self.logger.info(f"Document {file_path} sent to {context['from']['id']}")
 
     def download_document(self, file_id):
@@ -174,6 +177,10 @@ class Bot(Config):
     def process_media(self, context):
         """
         Processes media if document is received
+        If a document was received firstly tries to delete the previous assigned file path
+        Sets a new file path
+        Downloads the document and stores it in a temporary folder
+        Recognizes a file format and calls the corresponding answer function
         :param context: dict
         :return: None
         """
@@ -181,6 +188,16 @@ class Bot(Config):
             self.logger.debug("Document detected")
 
             file_id = context["document"]["file_id"]
+            old_path = self.document_converter.find_file_by_id(
+                self.database.get_filepath(
+                    context["from"]["id"]
+                )
+            )
+            try:
+                os.remove(old_path)
+            except Exception as e:
+                self.logger.info(f"Error deleting file at {old_path}: {e}")
+
             self.database.set_filepath(
                 context["from"]["id"],
                 file_id
@@ -202,7 +219,34 @@ class Bot(Config):
                 self.logger.debug(f"Document format {file_format} not supported")
                 self.send_message(context, "not_supported_format")
 
-    def add_user(self, context):
+    def command_start(self, context):
+        """
+        Sends start answer
+        :param context: dict
+        :return: None
+        """
+        self.send_message(context, "start")
+
+    def command_formats(self, context):
+        message = f"{self.get_answer('available_formats')}\n\n" \
+                  f"{self.get_answer('available_formats_images')}\n" \
+                  f"{', '.join(self.image_converter.AVAILABLE_FORMATS)}\n\n" \
+                  f"{self.get_answer('available_formats_documents')}\n" \
+                  f"{', '.join(self.document_converter.AVAILABLE_INPUT_FORMATS)}\n\n" \
+                  f"{self.get_answer('available_formats_video')}\n" \
+                  f"{', '.join(self.video_converter.AVAILABLE_FORMATS)}"
+        self.send_message(context, message, is_phrase=False)
+
+    def command_register(self, context):
+        """
+        Registers an user in database
+        Checks whether an user has needed privileges
+        If so parses a message to get a new user id
+        If no proper user id supplied or an user is already registered
+        sends a corresponding message
+        :param context: dict
+        :return: None
+        """
         user_id = context["from"]["id"]
         if self.database.get_admin(user_id):
             text = context["text"]
@@ -224,25 +268,16 @@ class Bot(Config):
 
     def process_command(self, context):
         """
-        Sends command reply if command received
+        Calls a necessary command function
         :param context: dict
         :return: None
         """
         if "/start" in context["text"]:
-            self.send_message(context, "start")
+            self.command_start(context)
         elif "/formats" in context["text"]:
-            self.send_message(context, "available_formats")
-            self.send_message(context, "available_formats_images")
-            self.send_message(context, ", ".join(self.image_converter.AVAILABLE_FORMATS), is_phrase=False)
-            self.send_message(context, "available_formats_documents")
-            self.send_message(context, ", ".join(self.document_converter.AVAILABLE_INPUT_FORMATS), is_phrase=False)
-            self.send_message(context, "available_formats_video")
-            self.send_message(context, ", ".join(self.video_converter.AVAILABLE_FORMATS), is_phrase=False)
-
-            # TODO
-
+            self.command_formats(context)
         elif "/register" in context["text"]:
-            self.add_user(context)
+            self.command_register(context)
         else:
             self.send_message(context, "wrong_command")
 
@@ -313,6 +348,7 @@ class Bot(Config):
 
                 elif text in self.video_converter.AVAILABLE_FORMATS:
                     self.convert_video(context, prev_file_path)
+
                 else:
                     self.send_message(context, "not_supported_format")
             else:
@@ -323,8 +359,11 @@ class Bot(Config):
     def process_text(self, context):
         """
         Processes text
+        If a command detected processes command
+        Else treats a message as a conversion format request
         :param context: dict
         :return: None
+        :raises: UnsupportedFormatException
         """
         self.logger.debug("Text detected")
         try:
@@ -340,6 +379,7 @@ class Bot(Config):
     def process_message(self, context):
         """
         Processes message send by a user in telegram
+        Recognises a message attachment and processes it accordingly
         :param context: dict
         :return: None
         """

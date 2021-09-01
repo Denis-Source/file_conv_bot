@@ -4,7 +4,7 @@ from sqlalchemy.engine import create_engine
 from src.database.user import User
 from src.logger import Logger
 
-import os.path
+import os
 import datetime
 
 from config import Config
@@ -25,7 +25,7 @@ class DataBase(Config):
     """
     def __init__(self):
         self.folder = os.path.join(self.BASE_DIR, "database")
-        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}"
+        self.path = f"sqlite:///{os.path.join(self.folder, 'database.db')}?check_same_thread=False"
         self.logger = Logger("database")
 
         if not os.path.exists(self.folder):
@@ -65,6 +65,7 @@ class DataBase(Config):
                     last_filepath=""
                 )
             )
+            self.session.commit()
             self.logger.debug(f"User {telegram_id} registered")
 
     def set_admin(self, telegram_id, is_admin=True):
@@ -72,22 +73,25 @@ class DataBase(Config):
         Sets the admin attribute of an user found by a telegram_id
         If an user is not in a database registers him than gives an admin
         :param telegram_id: int
-        :param is_admin: boo
+        :param is_admin: bool
         :return: None
         """
-        # TODO logs warning every time it starts
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
+
         if user:
-            user.set_privileges(is_admin)
-            self.session.commit()
+            old_status = user.is_admin
+            if old_status != is_admin:
+                user.set_privileges(is_admin)
+                self.session.commit()
+            else:
+                self.logger.debug(f"User {telegram_id} already admin")
         else:
             self.register_user(telegram_id)
             user = query.filter_by(telegram_id=telegram_id).first()
             user.set_privileges(is_admin)
             self.session.commit()
-
-        self.logger.warning(f"User {telegram_id} set to admin")
+            self.logger.warning(f"User {telegram_id} set to admin")
 
     def inc_stat(self, telegram_id):
         """
@@ -115,10 +119,11 @@ class DataBase(Config):
         """
         query = self.session.query(User)
         user = query.filter_by(telegram_id=telegram_id).first()
-        self.logger.debug(f"User {telegram_id} found in database")
         if user:
+            self.logger.debug(f"User {telegram_id} found in database")
             return True
         else:
+            self.logger.debug(f"User {telegram_id} not found in database")
             return False
 
     def get_admin(self, telegram_id):
@@ -146,7 +151,6 @@ class DataBase(Config):
         user = query.filter_by(telegram_id=telegram_id).first()
         if user:
             filepath = user.get_last_filepath()
-            self.session.commit()
             self.logger.debug(f"User {telegram_id} set  last filepath at {filepath}")
             return filepath
         else:
@@ -172,5 +176,3 @@ class DataBase(Config):
             msg = f"User {telegram_id} is not registered"
             self.logger.debug(msg)
             raise NoUserFound(msg)
-
-

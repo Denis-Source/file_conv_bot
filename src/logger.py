@@ -15,8 +15,8 @@ class Logger(logging.Logger, Config):
     def add_f_handler(self):
         """
         File handler
-        Creates folder if it ot exists
-        Sets level and formatter
+        Creates a folder if it doesn't exist
+        Sets a level and a formatter
         :return: None
         """
         if not os.path.exists(self.LOGGING_FOLDER):
@@ -30,6 +30,8 @@ class Logger(logging.Logger, Config):
     def add_c_handler(self):
         """
         Command line handler
+        Creates a folder if it doesn't exist
+        Sets a level and a formatter
         :return: None
         """
         handler = logging.StreamHandler()

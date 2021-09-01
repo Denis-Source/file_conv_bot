@@ -5,6 +5,7 @@ from src.api import BotResource
 from config import Config
 
 app = Flask(__name__)
+
 api = Api(app)
 api.add_resource(BotResource, f"/{Config.BOT_TOKEN}")
 
