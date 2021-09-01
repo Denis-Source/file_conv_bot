@@ -35,6 +35,15 @@
   "not_supported_format": {
     "eng": "Supplied format not supported"
   },
+  "converting_document": {
+    "eng": "Converting document"
+  },
+  "converting_image": {
+    "eng": "Converting image"
+  },
+  "converting_video": {
+    "eng": "Converting video"
+  },
   "error": {
     "eng": "Oops something went wrong!"
   },

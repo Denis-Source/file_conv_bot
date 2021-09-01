@@ -288,6 +288,7 @@ class Bot(Config):
         :param file_id: str
         :return: None
         """
+        self.send_message(context, "converting_image")
         file_path = self.image_converter.find_file_by_id(file_id)
         old_format = file_path.split(".")[-1]
         if old_format in self.image_converter.AVAILABLE_FORMATS:
@@ -303,6 +304,7 @@ class Bot(Config):
         :param file_id: str
         :return: None
         """
+        self.send_message(context, "converting_document")
         file_path = self.document_converter.find_file_by_id(file_id)
         old_format = file_path.split(".")[-1]
         if old_format in self.document_converter.AVAILABLE_INPUT_FORMATS:
@@ -318,6 +320,7 @@ class Bot(Config):
         :param file_id: str
         :return: None
         """
+        self.send_message(context, "converting_video")
         file_path = self.video_converter.find_file_by_id(file_id)
         old_format = file_path.split(".")[-1]
         if old_format in self.video_converter.AVAILABLE_FORMATS:  # TODO
@@ -389,7 +392,7 @@ class Bot(Config):
             else:
                 if self.database.get_authorised(telegram_id=context["from"]["id"]):
                     if "document" in context:
-                        if context["document"]["file_size"] <= 20000000:
+                        if context["document"]["file_size"] <= 2000000:
                             self.process_media(context)
                         else:
                             self.send_message(context, "file_too_big")
